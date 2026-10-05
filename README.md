@@ -1,67 +1,46 @@
 **Français** | [English](README.en.md)
 
-# SOMA — Solar Map
+# SOMIG — Solar Maintenance and Intervention Guide
 
-Cartographie collaborative des installations solaires hors réseau en Afrique.
+Guide de diagnostic et d'intervention pour les systèmes solaires hors réseau, par assistant conversationnel.
 
-Les techniciens et installateurs déclarent les installations qu'ils posent ou entretiennent. SOMA agrège ces déclarations pour rendre visible un parc aujourd'hui largement non recensé.
+Le technicien décrit le problème observé. SOMIG pose les questions de diagnostic dans l'ordre utile, identifie la cause probable et propose la procédure d'intervention.
 
 > Statut : en développement — MVP en cours.
 
 ## Pourquoi
 
-Les installations solaires hors réseau se comptent par millions, mais leur localisation, leur puissance et leur état réel sont mal connus. Cette absence de données freine la planification publique, le ciblage des financements et le service après-vente.
+Sur le terrain, la majorité des pannes relèvent d'un petit nombre de causes connues. Un technicien expérimenté les identifie en quelques minutes ; un technicien junior peut y passer une journée ou remplacer un équipement sain. SOMIG met cette expérience à disposition de tous, sur un canal déjà utilisé : WhatsApp.
 
-## Données déclarées
+## Fonctionnement
 
-| Champ | Description |
-|---|---|
-| Localisation | Coordonnées GPS (stockées, jamais publiées à l'adresse exacte) |
-| Puissance | Puissance crête des panneaux (Wc), capacité batterie |
-| Type | Kit domestique, usage productif, pompage, institutionnel… |
-| Équipements | Marques et modèles (panneaux, régulateur, onduleur, batterie) |
-| État | En service, en panne, hors service |
-| Date | Installation, dernière intervention |
+1. Le technicien envoie un message décrivant le symptôme (texte, photo de l'afficheur, mesure).
+2. SOMIG rapproche le symptôme des cas de la base de connaissances.
+3. Il guide le diagnostic par questions successives (mesures à prendre, points à vérifier).
+4. Il propose la cause probable, la procédure d'intervention et les précautions de sécurité.
 
-## Ce que reçoit le contributeur
+## Périmètre du MVP
 
-- Un registre gratuit de ses installations et de leur historique d'intervention.
-- Des rappels de maintenance.
-- Une visibilité sur la carte publique (s'il le souhaite) auprès des clients et partenaires.
+- Canal : WhatsApp Business.
+- Base de connaissances : les 20 pannes les plus fréquentes sur les systèmes solaires hors réseau (kits domestiques, régulateurs, onduleurs, batteries plomb et LiFePO4).
+- Format : un fichier JSON par panne, lisible et modifiable par un technicien.
 
 ## Accès
 
 | Utilisateur | Accès | Coût |
 |---|---|---|
-| Technicien indépendant | Registre personnel, carte publique | Gratuit |
-| Entreprise d'installation | Tableau de bord du parc, gestion multi-techniciens | Abonnement |
-| Fabricant, distributeur | Répartition du parc par équipement et par zone | Abonnement ou rapport ponctuel |
-| Gouvernement, bailleur | Données agrégées par zone, rapports d'électrification | Licence de données |
-
-## Politique de données
-
-- **Consentement** : chaque installation est déclarée avec l'accord du propriétaire.
-- **Propriété** : chaque contributeur garde la maîtrise de ses déclarations et peut les exporter ou les retirer.
-- **Neutralité** : aucun acteur, y compris les fondateurs du projet, n'a d'accès privilégié aux données déclarées par des tiers. Les données d'un installateur ne sont jamais transmises nominativement à un autre.
-- **Carte publique** : uniquement des données agrégées par zone (aucune position exacte, aucun nom).
-- **Données agrégées avancées** : accès payant, sous conditions d'utilisation distinctes de la licence du code.
-- **Conformité** : traitement conforme à la réglementation sur les données personnelles des pays couverts.
-
-La licence AGPL-3.0 couvre le code, pas les données. Les données relèvent de cette politique.
-
-## Périmètre du MVP
-
-- Formulaire de déclaration mobile.
-- Carte basée sur Google Maps.
-- Export des données du contributeur.
+| Technicien | Diagnostic guidé, base de connaissances complète | Gratuit |
+| Entreprise d'installation | Suivi des interventions par technicien, rapports | Abonnement |
+| Fabricant, distributeur | Statistiques de pannes anonymisées par équipement | Abonnement ou rapport ponctuel |
 
 ## Structure du dépôt
 
 ```
-soma/
-├── app/            # Formulaire de déclaration et carte
-├── api/            # Collecte et agrégation
-├── data-policy/    # Politique de données et conditions d'accès
+somig/
+├── knowledge-base/      # Cas de pannes au format JSON
+│   └── schema.json      # Schéma de validation d'un cas
+├── engine/              # Logique de diagnostic
+├── channels/whatsapp/   # Connecteur WhatsApp Business
 ├── docs/
 ├── README.md
 ├── README.en.md
@@ -71,11 +50,19 @@ soma/
 
 ## Contribuer
 
-Deux types de contribution : du code, et des déclarations d'installations. Les contributeurs de code signent un accord de contribution (CLA) avant la première fusion. Voir [CONTRIBUTING.md](CONTRIBUTING.md).
+Les contributions de techniciens sont prioritaires : nouveaux cas de pannes, corrections de procédures, retours de terrain.
+
+Chaque contributeur signe un accord de contribution (CLA) avant la première fusion. Voir [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Sécurité
+
+SOMIG est une aide au diagnostic. Il ne remplace ni la formation ni les règles de sécurité électrique. Toute intervention reste sous la responsabilité du technicien.
 
 ## Licence
 
-Code sous licence [AGPL-3.0](LICENSE). Licence commerciale disponible sur demande. Contact : weareoshu.project@gmail.com.
+Code sous licence [AGPL-3.0](LICENSE). Toute exploitation de ce code dans un service accessible en ligne impose la publication des modifications sous la même licence.
+
+Une licence commerciale est disponible pour les usages incompatibles avec l'AGPL. Contact : weareoshu.project@gmail.com.
 
 ## Projet
 

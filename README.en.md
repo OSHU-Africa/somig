@@ -1,67 +1,46 @@
 [Français](README.md) | **English**
 
-# SOMA — Solar Map
+# SOMIG — Solar Maintenance and Intervention Guide
 
-Collaborative mapping of off-grid solar installations in Africa.
+Conversational diagnosis and intervention guide for off-grid solar systems.
 
-Technicians and installers declare the installations they set up or maintain. SOMA aggregates these declarations to make visible an installation base that is largely unrecorded today.
+The technician describes the observed problem. SOMIG asks the diagnostic questions in a useful order, identifies the probable cause and proposes the intervention procedure.
 
 > Status: in development — MVP in progress.
 
 ## Why
 
-Off-grid solar installations number in the millions, but their location, capacity and actual condition are poorly known. This data gap holds back public planning, funding allocation and after-sales service.
+In the field, most faults come from a small number of known causes. An experienced technician identifies them in minutes; a junior technician may spend a day on it or replace healthy equipment. SOMIG makes this experience available to everyone, on a channel they already use: WhatsApp.
 
-## Declared data
+## How it works
 
-| Field | Description |
-|---|---|
-| Location | GPS coordinates (stored, never published at exact address) |
-| Capacity | Panel peak power (Wp), battery capacity |
-| Type | Solar home kit, productive use, pumping, institutional… |
-| Equipment | Brands and models (panels, charge controller, inverter, battery) |
-| Condition | Working, faulty, out of service |
-| Date | Installation, last intervention |
+1. The technician sends a message describing the symptom (text, photo of a display, a measurement).
+2. SOMIG matches the symptom against the knowledge base.
+3. It guides the diagnosis through successive questions (measurements to take, points to check).
+4. It proposes the probable cause, the intervention procedure and safety precautions.
 
-## What contributors get
+## MVP scope
 
-- A free register of their installations and intervention history.
-- Maintenance reminders.
-- Optional visibility on the public map for clients and partners.
+- Channel: WhatsApp Business.
+- Knowledge base: the 20 most frequent faults on off-grid solar systems (solar home kits, charge controllers, inverters, lead-acid and LiFePO4 batteries).
+- Format: one JSON file per fault, readable and editable by a technician.
 
 ## Access
 
 | User | Access | Cost |
 |---|---|---|
-| Independent technician | Personal register, public map | Free |
-| Installation company | Fleet dashboard, multi-technician management | Subscription |
-| Manufacturer, distributor | Installation base by equipment and area | Subscription or one-off report |
-| Government, funder | Data aggregated by area, electrification reports | Data license |
-
-## Data policy
-
-- **Consent**: each installation is declared with the owner's agreement.
-- **Ownership**: each contributor stays in control of their declarations and can export or withdraw them.
-- **Neutrality**: no party, including the project's founders, has privileged access to data declared by third parties. One installer's data is never passed on by name to another.
-- **Public map**: only data aggregated by area (no exact position, no names).
-- **Advanced aggregated data**: paid access, under terms of use separate from the code license.
-- **Compliance**: processing in line with personal data regulations in the countries covered.
-
-The AGPL-3.0 license covers the code, not the data. Data is governed by this policy.
-
-## MVP scope
-
-- Mobile declaration form.
-- Map based on Google Maps.
-- Export of the contributor's own data.
+| Technician | Guided diagnosis, full knowledge base | Free |
+| Installation company | Intervention tracking per technician, reports | Subscription |
+| Manufacturer, distributor | Anonymized fault statistics by equipment | Subscription or one-off report |
 
 ## Repository structure
 
 ```
-soma/
-├── app/            # Declaration form and map
-├── api/            # Collection and aggregation
-├── data-policy/    # Data policy and access terms
+somig/
+├── knowledge-base/      # Fault cases in JSON
+│   └── schema.json      # Validation schema for a case
+├── engine/              # Diagnostic logic
+├── channels/whatsapp/   # WhatsApp Business connector
 ├── docs/
 ├── README.md
 ├── README.en.md
@@ -71,11 +50,19 @@ soma/
 
 ## Contributing
 
-Two kinds of contribution: code, and installation declarations. Code contributors sign a Contributor License Agreement (CLA) before their first merge. See [CONTRIBUTING.md](CONTRIBUTING.md).
+Contributions from technicians come first: new fault cases, procedure corrections, field feedback.
+
+Each contributor signs a Contributor License Agreement (CLA) before their first merge. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Safety
+
+SOMIG is a diagnostic aid. It does not replace training or electrical safety rules. Every intervention remains the technician's responsibility.
 
 ## License
 
-Code licensed under [AGPL-3.0](LICENSE). Commercial license available on request. Contact: weareoshu.project@gmail.com.
+Code licensed under [AGPL-3.0](LICENSE). Any use of this code in a network-accessible service requires publishing modifications under the same license.
+
+A commercial license is available for uses incompatible with the AGPL. Contact: weareoshu.project@gmail.com.
 
 ## Project
 
