@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/oshu-africa/somig/knowledge-base/schema.json",
+  "title": "Cas de panne SOMIG",
+  "description": "Structure d'un cas de panne de la base de connaissances SOMIG. Un fichier par cas.",
+  "type": "object",
+  "required": ["id", "version", "titre", "categorie", "systemes", "frequence", "gravite", "symptomes", "outils", "securite", "diagnostic", "causes"],
+  "additionalProperties": false,
+  "$defs": {
+    "texte": {
+      "description": "Texte bilingue. Le français est obligatoire, l'anglais facultatif.",
+      "type": "object",
+      "required": ["fr"],
+      "properties": {
+        "fr": { "type": "string", "minLength": 1 },
+        "en": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "destination": {
+      "description": "Où mène une réponse : une autre étape (E…) ou une cause identifiée (C…).",
+      "type": "string",
+      "pattern": "^(E|C)[0-9]+$"
+    }
+  },
+  "properties": {
+    "id": {
+      "description": "Identifiant unique du cas, ex. SOMIG-001.",
+      "type": "string",
+      "pattern": "^SOMIG-[0-9]{3}$"
+    },
+    "version": {
+      "description": "Version du cas, incrémentée à chaque modification.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "titre": { "$ref": "#/$defs/texte" },
+    "categorie": {
+      "description": "Composant principal concerné.",
+      "type": "string",
+      "enum": ["batterie", "regulateur", "onduleur", "panneau", "cablage_protection", "charge", "paygo", "autre"]
+    },
+    "systemes": {
+      "description": "Types de systèmes concernés.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["kit_domestique", "usage_productif", "pompage", "institutionnel"] }
+    },
+    "frequence": {
+      "description": "Fréquence observée sur le terrain.",
+      "type": "string",
+      "enum": ["tres_frequente", "frequente", "occasionnelle"]
+    },
+    "gravite": {
+      "description": "Conséquence si la panne n'est pas traitée.",
+      "type": "string",
+      "enum": ["faible", "moyenne", "elevee", "critique"]
+    },
+    "symptomes": {
+      "description": "Ce que le technicien ou le client observe. Les mots-clés servent à reconnaître le cas dans un message WhatsApp.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["description", "mots_cles"],
+        "additionalProperties": false,
+        "properties": {
+          "description": { "$ref": "#/$defs/texte" },
+          "mots_cles": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "outils": {
+      "description": "Outils nécessaires au diagnostic.",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "securite": {
+      "description": "Précautions à rappeler avant toute intervention.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/texte" }
+    },
+    "diagnostic": {
+      "description": "Arbre de diagnostic. La première étape est E1. Chaque réponse mène à une autre étape ou à une cause.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "question", "type", "reponses"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^E[0-9]+$" },
+          "question": { "$ref": "#/$defs/texte" },
+          "type": {
+            "description": "oui_non : réponse oui ou non. mesure : valeur chiffrée comparée à des seuils. choix : liste d'options.",
+            "type": "string",
+            "enum": ["oui_non", "mesure", "choix"]
+          },
+          "unite": {
+            "description": "Unité de la mesure (V, A, W, °C…). Obligatoire si type = mesure.",
+            "type": "string"
+          },
+          "reponses": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "required": ["condition", "vers"],
+              "additionalProperties": false,
+              "properties": {
+                "condition": {
+                  "description": "oui / non, une plage de mesure (ex. '< 11.5', '11.5-12.4', '>= 12.5'), ou le libellé d'une option.",
+                  "type": "string"
+                },
+                "vers": { "$ref": "#/$defs/destination" }
+              }
+            }
+          }
+        },
+        "if": { "properties": { "type": { "const": "mesure" } } },
+        "then": { "required": ["unite"] }
+      }
+    },
+    "causes": {
+      "description": "Causes possibles et procédure d'intervention pour chacune.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "procedure"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^C[0-9]+$" },
+          "description": { "$ref": "#/$defs/texte" },
+          "procedure": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/texte" }
+          },
+          "pieces": {
+            "description": "Pièces ou consommables éventuellement nécessaires.",
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "duree_min": {
+            "description": "Durée estimée de l'intervention, en minutes.",
+            "type": "integer",
+            "minimum": 1
+          },
+          "escalade": {
+            "description": "Vrai si l'intervention dépasse le niveau d'un technicien de terrain (retour atelier, garantie fabricant).",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "notes_terrain": { "$ref": "#/$defs/texte" },
+    "auteur": { "type": "string" },
+    "date_maj": { "type": "string", "format": "date" }
+  }
+}
