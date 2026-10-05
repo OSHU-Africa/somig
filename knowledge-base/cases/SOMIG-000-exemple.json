@@ -1,0 +1,102 @@
+{
+  "id": "SOMIG-000",
+  "version": 1,
+  "titre": {
+    "fr": "EXEMPLE — Aucune sortie : les appareils ne s'allument pas",
+    "en": "EXAMPLE — No output: appliances do not turn on"
+  },
+  "categorie": "batterie",
+  "systemes": ["kit_domestique", "usage_productif"],
+  "frequence": "tres_frequente",
+  "gravite": "moyenne",
+  "symptomes": [
+    {
+      "description": {
+        "fr": "Plus rien ne s'allume, le régulateur est allumé mais la sortie est coupée.",
+        "en": "Nothing turns on, the charge controller is on but the output is off."
+      },
+      "mots_cles": ["rien ne marche", "pas de courant", "ça ne s'allume pas", "sortie coupée", "lampe éteinte"]
+    }
+  ],
+  "outils": ["multimètre"],
+  "securite": [
+    {
+      "fr": "Ne jamais court-circuiter les bornes de la batterie. Retirer montre et bagues.",
+      "en": "Never short the battery terminals. Remove watch and rings."
+    }
+  ],
+  "diagnostic": [
+    {
+      "id": "E1",
+      "question": {
+        "fr": "Mesure la tension aux bornes de la batterie. Quelle valeur lis-tu ?",
+        "en": "Measure the voltage at the battery terminals. What value do you read?"
+      },
+      "type": "mesure",
+      "unite": "V",
+      "reponses": [
+        { "condition": "< 11.5", "vers": "C1" },
+        { "condition": ">= 11.5", "vers": "E2" }
+      ]
+    },
+    {
+      "id": "E2",
+      "question": {
+        "fr": "Le fusible ou le disjoncteur de sortie est-il intact ?",
+        "en": "Is the output fuse or breaker intact?"
+      },
+      "type": "oui_non",
+      "reponses": [
+        { "condition": "non", "vers": "C2" },
+        { "condition": "oui", "vers": "C3" }
+      ]
+    }
+  ],
+  "causes": [
+    {
+      "id": "C1",
+      "description": {
+        "fr": "Batterie déchargée : le régulateur a coupé la sortie pour la protéger.",
+        "en": "Discharged battery: the controller cut the output to protect it."
+      },
+      "procedure": [
+        { "fr": "Laisser recharger la batterie une journée complète sans charge branchée." },
+        { "fr": "Vérifier l'ensoleillement et la propreté des panneaux." },
+        { "fr": "Revoir avec le client la consommation quotidienne." }
+      ],
+      "duree_min": 30
+    },
+    {
+      "id": "C2",
+      "description": {
+        "fr": "Protection de sortie déclenchée (surcharge ou court-circuit).",
+        "en": "Output protection tripped (overload or short circuit)."
+      },
+      "procedure": [
+        { "fr": "Débrancher toutes les charges." },
+        { "fr": "Rechercher l'appareil ou le câble en défaut avant de remplacer le fusible." },
+        { "fr": "Remplacer le fusible par un modèle de même calibre." }
+      ],
+      "pieces": ["fusible de même calibre"],
+      "duree_min": 20
+    },
+    {
+      "id": "C3",
+      "description": {
+        "fr": "Défaut probable du régulateur ou du câblage de sortie.",
+        "en": "Likely charge controller or output wiring fault."
+      },
+      "procedure": [
+        { "fr": "Mesurer la tension aux bornes de sortie du régulateur." },
+        { "fr": "Si la tension est nulle avec une batterie chargée, prévoir le remplacement du régulateur." }
+      ],
+      "duree_min": 45,
+      "escalade": true
+    }
+  ],
+  "notes_terrain": {
+    "fr": "Cas fictif servant d'exemple de structure. Seuils à adapter selon la tension système et la chimie de batterie."
+  },
+  "auteur": "OSHU",
+  "date_maj": "2026-10-05"
+}
